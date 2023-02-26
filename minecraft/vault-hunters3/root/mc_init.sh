@@ -14,7 +14,7 @@ auto_restart_pid=$!
 cd ${MC_INST_DIR}
 
 while true; do
-    ./run.sh -Xmx${MEM_SIZE} -Xms${MEM_SIZE}
+    ./run.sh  Xmx${MEM_SIZE} Xms${MEM_SIZE}
 
     exit_code=$?
     echo "Java exited with code ${exit_code}"

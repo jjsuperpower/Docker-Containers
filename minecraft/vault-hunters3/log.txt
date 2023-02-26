@@ -1,0 +1,32 @@
+2023-02-26 01:03:17,115 main ERROR Error processing element Queue ([Appenders: null]): CLASS_NOT_FOUND
+2023-02-26 01:03:17,842 main ERROR Unable to locate appender "ServerGuiConsole" for logger config "root"
+[01:03:18] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forgeserver, --fml.forgeVersion, 40.2.1, --fml.mcVersion, 1.18.2, --fml.forgeGroup, net.minecraftforge, --fml.mcpVersion, 20220404.173914, -Xmx4G, -Xms4G]
+Forge[01:03:18] [main/INFO] [cp.mo.mo.Launcher/MODLAUNCHER]: ModLauncher 9.1.3+9.1.3+main.9b69c82a starting: java version 16-ea by Oracle Corporation
+ForgeException in thread "main" java.util.ServiceConfigurationError: cpw.mods.modlauncher.api.ILaunchHandlerService: Unable to load net.minecraftforge.fml.loading.targets.FMLClientLaunchHandler
+        at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:582)
+        at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:854)
+        at java.base/java.util.ServiceLoader$LayerLookupIterator.hasNext(ServiceLoader.java:951)
+        at java.base/java.util.ServiceLoader$ProviderSpliterator.tryAdvance(ServiceLoader.java:1481)
+        at java.base/java.util.Spliterator.forEachRemaining(Spliterator.java:326)
+        at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:484)
+        at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:474)
+        at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)
+        at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:234)
+        at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:682)
+        at MC-BOOTSTRAP/cpw.mods.modlauncher@9.1.3/cpw.mods.modlauncher.LaunchServiceHandler.<init>(LaunchServiceHandler.java:40)
+        at MC-BOOTSTRAP/cpw.mods.modlauncher@9.1.3/cpw.mods.modlauncher.Launcher.<init>(Launcher.java:53)
+        at MC-BOOTSTRAP/cpw.mods.modlauncher@9.1.3/cpw.mods.modlauncher.Launcher.main(Launcher.java:77)
+        at MC-BOOTSTRAP/cpw.mods.modlauncher@9.1.3/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:26)
+        at MC-BOOTSTRAP/cpw.mods.modlauncher@9.1.3/cpw.mods.modlauncher.BootstrapLaunchConsumer.accept(BootstrapLaunchConsumer.java:23)
+        at cpw.mods.bootstraplauncher@1.0.0/cpw.mods.bootstraplauncher.BootstrapLauncher.main(BootstrapLauncher.java:149)
+Caused by: java.lang.UnsupportedClassVersionError: net/minecraftforge/fml/loading/targets/FMLClientLaunchHandler has been compiled by a more recent version of the Java Runtime (class file version 61.0), this version of the Java Runtime only recognizes class file versions up to 60.0
+        at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+        at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1010)
+        at cpw.mods.securejarhandler@1.0.3/cpw.mods.cl.ModuleClassLoader.readerToClass(ModuleClassLoader.java:116)
+        at cpw.mods.securejarhandler@1.0.3/cpw.mods.cl.ModuleClassLoader.lambda$findClass$16(ModuleClassLoader.java:216)
+        at cpw.mods.securejarhandler@1.0.3/cpw.mods.cl.ModuleClassLoader.loadFromModule(ModuleClassLoader.java:226)
+        at cpw.mods.securejarhandler@1.0.3/cpw.mods.cl.ModuleClassLoader.findClass(ModuleClassLoader.java:216)
+        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:631)
+        at java.base/java.lang.Class.forName(Class.java:543)
+        at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:852)
+        ... 14 more

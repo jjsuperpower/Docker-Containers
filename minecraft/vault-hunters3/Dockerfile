@@ -1,4 +1,4 @@
-FROM openjdk:16-ea-slim-buster
+FROM openjdk:17-ea-slim-buster
 
 ENV MC_INST_DIR /minecraft
 ENV MEM_SIZE=4G
