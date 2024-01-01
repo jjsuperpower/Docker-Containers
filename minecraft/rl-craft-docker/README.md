@@ -4,7 +4,7 @@ GitHub Repo: [https://github.com/jjsuperpower/Minecraft_Plugins/tree/master/rl-c
 This is a simple image for easy setup and deployment of a rl-craft Minecraft server. 
 The first time this image is started, it downloads the rl-craft modpack and the corresponding forge version. Then it starts the server. The server can be configured to use a specific rl-craft version.
 
-Supported versions: 2.9.1c, 2.9, 2.8.2, 2.8.1, 2.8, 2.7, 2.6.3, 2.5, 1.4, 1.3, 1.2, 1.1
+Supported versions: 2.9.3, 2.9.2d, 2.9.1c, 2.9, 2.8.2, 2.8.1, 2.8, 2.7, 2.6.3, 2.5, 1.4, 1.3, 1.2, 1.1
 
 BTW, most of these versions are untested, good luck :)
 
