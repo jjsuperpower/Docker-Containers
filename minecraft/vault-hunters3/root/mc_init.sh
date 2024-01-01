@@ -8,18 +8,9 @@ if [ ! -e ${MC_INST_DIR}/run.sh ]; then
     mc_create_server
 fi
 
-/bin/bash /mc_init.d/auto_restart.sh &
-auto_restart_pid=$!
-
 cd ${MC_INST_DIR}
 
-while true; do
-    ./run.sh  Xmx${MEM_SIZE} Xms${MEM_SIZE}
+./run.sh  Xmx${MEM_SIZE} Xms${MEM_SIZE} nogui
 
-    exit_code=$?
-    echo "Java exited with code ${exit_code}"
-    echo "Starting server in 30 seconds..."
-    sleep 30
-done
-
-kill -15 ${auto_restart_pid}    # kill auto restart script
+exit_code=$?
+echo "Java exited with code ${exit_code}"

@@ -13,5 +13,5 @@ else
     docker build -t $AUTHOR/$CNAME:$CVERSION .
 fi
 
-mkdir "$(pwd)/testserver"
-docker run --rm --name mc-server -v "$(pwd)/testserver":/minecraft -e MOD_VERSION=$MVERSION -e EULA=TRUE -p 25565:25565 -it $AUTHOR/$CNAME:$CVERSION
+# mkdir "$(pwd)/testserver"
+# docker run --rm --name mc-server -v "$(pwd)/testserver":/minecraft -e MOD_VERSION=$MVERSION -e EULA=TRUE -p 25565:25565 -it $AUTHOR/$CNAME:$CVERSION

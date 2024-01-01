@@ -10,9 +10,7 @@ COPY root /
 
 RUN apt update -y
 RUN apt upgrade -y
-RUN apt install -y wget
-RUN apt install -y zip
-RUN apt install -y unzip
+RUN apt install -y wget zip unzip
 
 RUN chmod +x /mc_init.sh
 RUN chmod +x /mc_init.d/auto_restart.sh
