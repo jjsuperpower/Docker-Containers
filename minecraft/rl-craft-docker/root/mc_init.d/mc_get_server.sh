@@ -5,6 +5,16 @@ get_rlcraft_url()   {
     local forge11_2="https://maven.minecraftforge.net/net/minecraftforge/forge/1.11.2-13.20.1.2588/forge-1.11.2-13.20.1.2588-installer.jar"
 
     case $1 in 
+        "2.9.3")
+            RL_CRAFT_URL="${rlcraft_base_url}/4612/990/RLCraft+Server+Pack+1.12.2+-+Release+v2.9.3.zip"
+            MC_FORGE=${forge12_2}
+        ;;
+
+        "2.9.2d")
+            RL_CRAFT_URL="${rlcraft_base_url}/4487/650/RLCraft+Server+Pack+1.12.2+-+Release+v2.9.2d.zip"
+            MC_FORGE=${forge12_2}
+        ;;
+
         "2.9.1c")
             RL_CRAFT_URL="${rlcraft_base_url}/3655/676/RLCraft+Server+Pack+1.12.2+-+Release+v2.9.1c.zip"
             MC_FORGE=${forge12_2}
@@ -96,7 +106,7 @@ check_versions() {
     # check if RL_CRAFT_URL is empty
     if [ -z "$RL_CRAFT_URL" ]; then
         echo "Mod pack is not available for this version of RL-Craft" 
-        echo "Supported versions are: 2.9.1c, 2.9, 2.8.2, 2.8.1, 2.8, 2.7, 2.6.3, 2.5, 2.4, 2.3, 2.2, 2.1, 1.4, 1.3, 1.2, 1.1"
+        echo "Supported versions are: 2.9.3, 2.9.2d, 2.9.1c, 2.9, 2.8.2, 2.8.1, 2.8, 2.7, 2.6.3, 2.5, 2.4, 2.3, 2.2, 2.1, 1.4, 1.3, 1.2, 1.1"
         exit 1
     fi
 
