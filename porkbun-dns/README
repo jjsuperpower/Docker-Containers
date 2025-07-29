@@ -28,7 +28,7 @@ This will create a container named `pb_ddns` and store the configuration in a vo
 | -------- | ----------- | ------- |
 | `apikey` | Your PorkBun API key | `None` |
 | `secretapikey` | Your PorkBun Secret API key | `None` |
-| `domains_file` | Path to domains file | `/data/domains.json` |
+| `domains_file` | Path to domains file | `/data/domains.txt` |
 | `interval` | Interval in minutes to update DNS records | `60` |
 | `log_level` | Logging level | `INFO` |
 
@@ -47,7 +47,7 @@ services:
         environment:
         - apikey=your_apikey
         - secretapikey=your_secretapikey
-        - domains_file=/data/domains.json
+        - domains_file=/data/domains.txt
         - interval=60
         - log_level=INFO
         
