@@ -1,11 +1,7 @@
-FROM python:3.13
+FROM python:3.13-alpine
 RUN pip install --upgrade pip
 
-RUN apt update \
-    && apt install -y nano \
-    && apt-get clean autoclean \
-    && apt-get autoremove --yes \
-    && rm -rf /var/lib/{apt,dpkg,cache,log}/
+RUN apk add --no-cache nano
 
 # Install dependencies
 RUN --mount=type=bind,source=requirements.txt,target=/requirements.txt \
