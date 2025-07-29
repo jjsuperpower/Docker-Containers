@@ -1,6 +1,5 @@
 import json
 import requests
-import sys
 
 import os
 import logging
@@ -29,7 +28,7 @@ class PorkBun_DDNS():
         self.logger.debug(f'All records: {allRecords}')
 
         if allRecords["status"]=="ERROR":
-            self.logger.error('Error getting domain. Check to make sure you specified the correct domain, and that API access has been switched on for this domain.');
+            self.logger.error('Error getting domain. Check to make sure you specified the correct domain, and that API access has been switched on for this domain.')
             raise Exception()
 
         return allRecords 
@@ -77,7 +76,7 @@ class PorkBun_DDNS():
         self.logger.debug(f'Created record: {create}')
 
         if create['status'] == 'ERROR':
-            self.logger.error(f'Error creating record')
+            self.logger.error('Error creating record')
         else:
             self.logger.info(create['status'])
         
