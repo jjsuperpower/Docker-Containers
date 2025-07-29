@@ -1,6 +1,6 @@
 # PorkBun DDNS Updater
 
-This is a simple docker image that updates PorkBun DNS(s) with your current IP address. Optionaly you can set static IP addresses for your DNS records.
+This is a simple docker image that updates PorkBun DNS(s) with your current IP address. Optionally you can set static IP addresses for your DNS records.
 
 The code is located on [GitHub](https://github.com/jjsuperpower/misc/tree/master/porkbun-dns). Issues can be reported there. Please feel free to contribute.
 
@@ -36,14 +36,11 @@ This will create a container named `pb_ddns` and store the configuration in a vo
 
 ```
 version: '3'
-
 services:
-
     app:
         image: jjsuperpower/porkbun-ddns
         container_name: "porkbun-ddns"
         restart: unless-stopped
-
         environment:
         - apikey=your_apikey
         - secretapikey=your_secretapikey
@@ -53,7 +50,6 @@ services:
         
         volumes:
         - data:/data
-
 volumes:
     data:
 ```
