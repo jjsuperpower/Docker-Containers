@@ -1,2 +1,4 @@
 testing.sh
 .ruff_cache
+result/
+result
