@@ -13,27 +13,26 @@
         
         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
           requests
+          nuitka
         ]);
 
         porkbun-ddns = pkgs.stdenv.mkDerivation {
           pname = "porkbun-ddns";
           version = "1.0.0";
           
-          src = ./.;
-          
+          src = "./porkbun_ddns.py";
+
           buildInputs = [ pythonEnv ];
-          
+          buildPhase = ''
+            python -m nuitka --no-progressbar --standalone --include-module=requests --static-libpython=yes porkbun_ddns.py
+          '';
+
+          # nuitka standalone does not detect that zlib is needed, so we explicitly include it
           installPhase = ''
-            mkdir -p $out/bin
-            cp porkbun_ddns.py $out/bin/porkbun-ddns
-            chmod +x $out/bin/porkbun-ddns
-            
-            # Create wrapper script
-            cat > $out/bin/porkbun-ddns-wrapper << EOF
-            #!${pkgs.bash}/bin/bash
-            exec ${pythonEnv}/bin/python $out/bin/porkbun-ddns "\$@"
-            EOF
-            chmod +x $out/bin/porkbun-ddns-wrapper
+            mkdir -p $out/dist
+            cp -r porkbun_ddns.dist/* $out/dist
+            cp ${pkgs.zlib}/lib/* $out/dist
+            mv $out/dist/porkbun_ddns.bin $out/dist/porkbun_ddns
           '';
           
           meta = with pkgs.lib; {
@@ -50,17 +49,27 @@
           
           copyToRoot = pkgs.buildEnv {
             name = "porkbun-ddns-env";
-            paths = [ porkbun-ddns pkgs.nano pkgs.busybox ];
+            paths = [ 
+              porkbun-ddns 
+              pkgs.nano 
+              pkgs.busybox 
+            ];
           };
           
           config = {
-            Cmd = [ "${porkbun-ddns}/bin/porkbun-ddns-wrapper" ];
-            WorkingDir = "/app";
+            Cmd = [ "/porkbun-ddns" ];
+            Env = [
+              "domains_file=/data/domains.txt"
+              "interval=60" 
+              "log_level=INFO"
+              "LD_LIBRARY_PATH=/lib:/lib64"
+            ];
+            WorkingDir = "/";
           };
           
           runAsRoot = ''
             #!${pkgs.runtimeShell}
-            mkdir -p /app/data
+            ln -s ${porkbun-ddns}/dist/porkbun_ddns /porkbun-ddns
           '';
         };
 
@@ -84,7 +93,11 @@
             pythonEnv
             ruff
             python3Packages.pytest
+            python3Packages.nuitka
             docker
+            pkgs.cacert
+            pkgs.zlib
+            pkgs.glibc
           ];
           
           shellHook = ''
