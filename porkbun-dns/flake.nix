@@ -20,11 +20,16 @@
           pname = "porkbun-ddns";
           version = "1.0.0";
           
-          src = "./porkbun_ddns.py";
+          src = pkgs.lib.cleanSourceWith {
+            src = ./.;
+            filter = path: type: baseNameOf path == "porkbun_ddns.py";
+          };
 
-          buildInputs = [ pythonEnv ];
+          disallowedReferences = [ pkgs.python3 ];
+          nativeBuildInputs = [ pythonEnv pkgs.removeReferencesTo ];
+          buildInputs = [ pkgs.zlib ];
           buildPhase = ''
-            python -m nuitka --no-progressbar --standalone --include-module=requests --static-libpython=yes porkbun_ddns.py
+            python -m nuitka --no-progressbar --standalone porkbun_ddns.py
           '';
 
           # nuitka standalone does not detect that zlib is needed, so we explicitly include it
@@ -33,6 +38,13 @@
             cp -r porkbun_ddns.dist/* $out/dist
             cp ${pkgs.zlib}/lib/* $out/dist
             mv $out/dist/porkbun_ddns.bin $out/dist/porkbun_ddns
+          '';
+
+          
+          fixupPhase = ''
+            find $out -type f -exec ${pkgs.patchelf}/bin/patchelf --shrink-rpath '{}' \; 2>/dev/null || true
+            # find $out -type f -exec ${pkgs.binutils}/bin/strip '{}' \; 2>/dev/null || true
+            find $out -type f -exec ${pkgs.removeReferencesTo}/bin/remove-references-to -t ${pkgs.python3} '{}' \; 2>/dev/null || true
           '';
           
           meta = with pkgs.lib; {
