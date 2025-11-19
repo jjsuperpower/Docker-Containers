@@ -2,14 +2,16 @@
   description = "Porkbun Dynamic DNS Python Application";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils.url = "github:numtide/flake-utils";
+    nix2container.url = "github:nlewo/nix2container";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, nix2container }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        nix2containerPkgs = nix2container.packages.${system};
         
         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
           requests
@@ -20,19 +22,23 @@
           pname = "porkbun-ddns";
           version = "1.0.0";
           
-          src = "./porkbun_ddns.py";
+          src = pkgs.lib.cleanSourceWith {
+            src = ./.;
+            filter = path: type: baseNameOf path == "porkbun_ddns.py";
+          };
 
-          buildInputs = [ pythonEnv ];
+          nativeBuildInputs = [ pythonEnv ];
           buildPhase = ''
             python -m nuitka --no-progressbar --standalone --include-module=requests --static-libpython=yes porkbun_ddns.py
           '';
 
           # nuitka standalone does not detect that zlib is needed, so we explicitly include it
           installPhase = ''
-            mkdir -p $out/dist
-            cp -r porkbun_ddns.dist/* $out/dist
-            cp ${pkgs.zlib}/lib/* $out/dist
-            mv $out/dist/porkbun_ddns.bin $out/dist/porkbun_ddns
+            mkdir -p $out/usr/local/porkbun-ddns
+            mkdir -p $out/bin
+            cp -r porkbun_ddns.dist/* $out/usr/local/porkbun-ddns
+            cp ${pkgs.zlib}/lib/* $out/usr/local/porkbun-ddns
+            ln -s $out/usr/local/porkbun-ddns/porkbun_ddns.bin $out/bin/porkbun-ddns
           '';
           
           meta = with pkgs.lib; {
@@ -43,34 +49,32 @@
           };
         };
 
-        dockerImage = pkgs.dockerTools.buildImage {
+        dockerImage = nix2containerPkgs.nix2container.buildImage {
           name = "porkbun-ddns";
           tag = "latest";
-          
-          copyToRoot = pkgs.buildEnv {
-            name = "porkbun-ddns-env";
-            paths = [ 
-              porkbun-ddns 
-              pkgs.nano 
-              pkgs.busybox 
-            ];
-          };
+          maxLayers = 40;
+
+          copyToRoot = [
+            (pkgs.buildEnv {
+              name = "root";
+              paths = [ 
+                porkbun-ddns
+                pkgs.nano 
+                pkgs.busybox 
+              ];
+              pathsToLink = [ "/bin" ];
+            })
+          ];
           
           config = {
-            Cmd = [ "/porkbun-ddns" ];
+            Cmd = [ "/bin/porkbun-ddns" ];
             Env = [
               "domains_file=/data/domains.txt"
               "interval=60" 
               "log_level=INFO"
-              "LD_LIBRARY_PATH=/lib:/lib64"
             ];
             WorkingDir = "/";
           };
-          
-          runAsRoot = ''
-            #!${pkgs.runtimeShell}
-            ln -s ${porkbun-ddns}/dist/porkbun_ddns /porkbun-ddns
-          '';
         };
 
       in
@@ -78,7 +82,7 @@
         packages = {
           default = porkbun-ddns;
           porkbun-ddns = porkbun-ddns;
-          docker = dockerImage;
+          docker = dockerImage.copyToDockerDaemon;
         };
 
         apps = {
