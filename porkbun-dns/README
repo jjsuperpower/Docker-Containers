@@ -2,7 +2,7 @@
 
 This is a simple docker image that updates PorkBun DNS(s) with your current IP address. Optionally you can set static IP addresses for your DNS records.
 
-The code is located on [GitHub](https://github.com/jjsuperpower/misc/tree/master/porkbun-dns). Issues can be reported there. Please feel free to contribute.
+The code is located on [GitHub](https://github.com/jjsuperpower/Docker-Containers/tree/main/porkbun-dns). Issues can be reported there. Please feel free to contribute.
 
 ## Getting Started
 To create a container, run the following command:
