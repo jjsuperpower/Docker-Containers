@@ -26,7 +26,7 @@
         };
 
         nixDockerImage = nix2containerPkgs.nix2container.buildImage {
-          name = "porkbun-ddns";
+          name = "jjsuperpower/porkbun-ddns";
           tag = "nix";
           maxLayers = 40;
 
@@ -55,13 +55,13 @@
         debianDockerImage = pkgs.writeShellScriptBin "porkbun-ddns-debian" ''
           #!/bin/sh
           set -e
-          docker buildx build -t porkbun-ddns:debian -f ${./Dockerfile.debian} .
+          docker buildx build -t jjsuperpower/porkbun-ddns:debian -f ${./Dockerfile.debian} .
         '';
 
         alpineDockerImage = pkgs.writeShellScriptBin "porkbun-ddns-alpine" ''
           #!/bin/sh
           set -e
-          docker buildx build -t porkbun-ddns:alpine -f ${./Dockerfile.alpine} .
+          docker buildx build -t jjsuperpower/porkbun-ddns:alpine -f ${./Dockerfile.alpine} .
         '';
 
         buildAllDockerImages = pkgs.writeShellScriptBin "build-all-docker" ''
@@ -70,7 +70,7 @@
           ${nixDockerImage.copyToDockerDaemon}/bin/copy-to-docker-daemon
           ${debianDockerImage}/bin/porkbun-ddns-debian
           ${alpineDockerImage}/bin/porkbun-ddns-alpine
-          docker image tag porkbun-ddns:debian porkbun-ddns:latest
+          docker image tag jjsuperpower/porkbun-ddns:debian jjsuperpower/porkbun-ddns:latest
         '';
 
       in
