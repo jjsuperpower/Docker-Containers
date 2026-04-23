@@ -1,0 +1,41 @@
+name: Update nixpkgs Flake Input
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1"  # Every Monday at 00:00 UTC
+
+jobs:
+  update-nixpkgs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update nixpkgs flake input
+        run: nix flake update nixpkgs
+        working-directory: ./porkbun-dns
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: bot/update-nixpkgs
+          commit-message: "chore(porkbun-dns): update nixpkgs flake input"
+          title: "chore(porkbun-dns): update nixpkgs flake input"
+          body: |
+            Automated weekly update of the `nixpkgs` flake input in `porkbun-dns/flake.lock`.
+
+            This PR was opened automatically and will be merged after 24 hours if no issues are found.
+          labels: nixpkgs-auto-merge
+          add-paths: porkbun-dns/flake.lock

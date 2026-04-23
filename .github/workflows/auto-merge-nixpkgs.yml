@@ -1,0 +1,58 @@
+name: Auto-merge nixpkgs Update PR
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # Every hour
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Merge PR if older than 24 hours
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+
+          # Find open PRs with the auto-merge label
+          prs=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --label "nixpkgs-auto-merge" \
+            --state open \
+            --json number,createdAt \
+            --jq '.[]')
+
+          if [ -z "$prs" ]; then
+            echo "No open PRs with label 'nixpkgs-auto-merge' found."
+            exit 0
+          fi
+
+          now=$(date -u +%s)
+
+          echo "$prs" | while IFS= read -r pr; do
+            pr_number=$(echo "$pr" | jq -r '.number')
+            created_at=$(echo "$pr" | jq -r '.createdAt')
+            pr_time=$(date -u -d "$created_at" +%s)
+            age=$(( now - pr_time ))
+
+            echo "PR #${pr_number} is ${age} seconds old (created at ${created_at})."
+
+            if [ "$age" -ge 86400 ]; then
+              echo "PR #${pr_number} is >= 24 hours old. Merging..."
+              gh pr merge "$pr_number" \
+                --repo "$GITHUB_REPOSITORY" \
+                --squash \
+                --delete-branch
+            else
+              remaining=$(( 86400 - age ))
+              echo "PR #${pr_number} is not old enough yet. ${remaining} seconds remaining."
+            fi
+          done
