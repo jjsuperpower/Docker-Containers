@@ -1,0 +1,58 @@
+name: Update Flake Lock
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  update-flake-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v18
+        with:
+          install_url: sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
+
+      - name: Enable Flakes
+        run: |
+          mkdir -p ~/.config/nix
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+      - name: Update Flake Lock
+        run: nix flake update
+        working-directory: ./porkbun-dns
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git checkout -b update-flake-lock
+          git add flake.lock
+          git commit -m "chore: Update porkbun_ddns/flake.lock"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: update-flake-lock
+          title: "chore: Update flake.lock"
+          body: "Automated bump to flake.lock."
+
+      - name: Wait for 1 Day
+        run: sleep 86400
+
+      - name: Merge Pull Request
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (pr) {
+              github.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+              });
+            }
