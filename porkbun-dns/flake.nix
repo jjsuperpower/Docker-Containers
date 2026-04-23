@@ -70,6 +70,7 @@
           ${nixDockerImage.copyToDockerDaemon}/bin/copy-to-docker-daemon
           ${debianDockerImage}/bin/porkbun-ddns-debian
           ${alpineDockerImage}/bin/porkbun-ddns-alpine
+          docker image tag porkbun-ddns:debian porkbun-ddns:latest
         '';
 
       in
